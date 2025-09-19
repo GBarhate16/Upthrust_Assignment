@@ -24,126 +24,81 @@ A secure, full-stack application that allows users to authenticate via GitHub OA
 - **User Profile Display**: Shows GitHub avatar, username, and role
 - **History Management**: Individual and bulk delete options for workflow history
 
-## 📝 Prerequisites
+## 📝 Quick Start Guide
 
-- **Node.js** (v14 or higher)
-- **GitHub Account** (for OAuth authentication)
-- **Google Gemini API Key** ([Get one from Google AI Studio](https://makersuite.google.com/app/apikey))
-- **GitHub OAuth App** (instructions below)
+### 1. **Prerequisites**
+- Node.js (v14+), GitHub account
+- [Google Gemini API Key](https://makersuite.google.com/app/apikey)
+- GitHub OAuth App ([setup instructions](#github-oauth-setup))
 
-## ⚙️ **Setup Instructions**
-
-### 1. Clone the Repository
-
+### 2. **Installation**
 ```bash
 git clone <your-repo-url>
 cd Automation
+
+# Backend setup
+cd backend && npm install
+
+# Frontend setup
+cd ../frontend-react && npm install
 ```
 
-### 2. GitHub OAuth Setup
+### 3. **Configuration**
+Update `.env` files in both `backend/` and `frontend-react/` directories with your API keys and OAuth credentials.
+
+### 4. **Run Application**
+```bash
+# Terminal 1: Backend (port 4000)
+cd backend && npm run dev
+
+# Terminal 2: Frontend (port 5173)
+cd frontend-react && npm run dev
+```
+
+### 5. **Access**
+Open `http://localhost:5173` and login with GitHub OAuth!
+
+## 🔐 **GitHub OAuth Setup**
 
 1. Go to [GitHub Developer Settings](https://github.com/settings/developers)
-2. Click "New OAuth App"
-3. Fill in the application details:
+2. Click "New OAuth App" and configure:
    - **Application name**: `Mini Workflow Automation`
    - **Homepage URL**: `http://localhost:4000`
    - **Authorization callback URL**: `http://localhost:4000/auth/github/callback`
-4. Click "Register application"
-5. Copy the **Client ID** and **Client Secret** for the next step
+3. Save and copy the **Client ID** and **Client Secret**
 
-### 3. Backend Setup
+## ⚙️ **Environment Configuration**
 
-```bash
-cd backend
-npm install
-```
-
-### 4. Environment Configuration
-
-1. Navigate to the `backend` directory
-2. Open the `.env` file
-3. Configure the following environment variables:
-
+### Backend `.env` (in `backend/` directory):
 ```env
-# Server Configuration
+# Server
 PORT=4000
 FRONTEND_URL=http://localhost:5173
 
-# JWT Configuration
+# Authentication
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
 JWT_EXPIRES_IN=7d
 SESSION_SECRET=your-super-secret-session-key-change-this-in-production
 
-# GitHub OAuth (from step 2)
+# GitHub OAuth
 GITHUB_CLIENT_ID=your_github_client_id_here
 GITHUB_CLIENT_SECRET=your_github_client_secret_here
 GITHUB_CALLBACK_URL=http://localhost:4000/auth/github/callback
 
-# AI Configuration
+# AI & APIs
 GEMINI_API_KEY=your_actual_gemini_api_key_here
 GEMINI_MODEL=gemini-2.5-flash
 MOCK_AI=false
-
-# Third-party API Keys (optional but recommended)
 OPENWEATHER_API_KEY=your_openweather_api_key
 NEWSAPI_KEY=your_newsapi_key
 GITHUB_TOKEN=your_github_personal_access_token
 ```
 
-### 5. Frontend Setup
-
-```bash
-cd ../frontend-react
-npm install
-```
-
-### 6. Frontend Environment Configuration
-
-1. Navigate to the `frontend-react` directory
-2. Create/update the `.env` file:
-
+### Frontend `.env` (in `frontend-react/` directory):
 ```env
 VITE_API_BASE_URL=http://localhost:4000
 VITE_DEBUG_MODE=true
 ```
-
-### 7. Run the Application
-
-#### Start the Backend Server
-
-```bash
-cd backend
-npm run dev
-```
-
-The backend server will start on `http://localhost:4000`
-
-#### Start the Frontend Development Server
-
-```bash
-cd frontend-react
-npm run dev
-```
-
-The frontend will be available at `http://localhost:5173`
-
-### 8. Access the Application
-
-1. Open your browser and navigate to `http://localhost:5173`
-2. You'll see the login page with a "Continue with GitHub" button
-3. Click the button to authenticate via GitHub OAuth
-4. After successful authentication, you'll be redirected to your personal dashboard
-5. Start creating workflows and view your private history!
-
-## 🔐 **Authentication Flow**
-
-1. **Unauthenticated Access**: Shows login page with GitHub OAuth
-2. **GitHub OAuth**: Redirects to GitHub for authorization
-3. **Token Generation**: Backend generates JWT token upon successful OAuth
-4. **Secure Access**: All API calls include JWT token for authentication
-5. **User Isolation**: Backend filters all data by authenticated user
-6. **Session Duration**: Tokens valid for 7 days, then automatic re-login required
-7. **Logout**: Clears tokens and returns to login page
 
 ## 📚 **API Endpoints**
 
@@ -290,99 +245,43 @@ Delete all workflows from your history.
 
 ## 🚐 **Troubleshooting**
 
-### Authentication Issues
+### Common Issues & Solutions
 
-**"OAuth callback error" or "Authentication failed"**
-- Verify GitHub OAuth app configuration
-- Ensure callback URL is exactly: `http://localhost:4000/auth/github/callback`
-- Check `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` in `.env`
-- Ensure frontend is running on port 5173
+| Issue | Solution |
+|-------|----------|
+| **OAuth callback error** | Verify GitHub OAuth app callback URL: `http://localhost:4000/auth/github/callback` |
+| **Token expired** | JWT tokens expire after 7 days - login again with GitHub |
+| **Backend connection failed** | Ensure backend runs on port 4000, check `.env` configuration |
+| **Frontend port conflicts** | Frontend must run on port 5173 for OAuth to work |
+| **Gemini AI errors** | Verify `GEMINI_API_KEY` in `.env` or set `MOCK_AI=true` |
+| **Database errors** | Check backend console, ensure write permissions for SQLite |
 
-**"Token expired" or automatic logout**
-- JWT tokens expire after 7 days
-- Simply login again with GitHub OAuth
-- Check browser console for specific error messages
+### Debugging Steps
+1. Check browser console for JavaScript errors
+2. Monitor backend logs for server errors
+3. Verify all environment variables are set
+4. Test authentication flow (logout/login)
+5. Clear browser localStorage if needed
 
-### Backend Connection Issues
+## 💻 **Technology Stack**
 
-**"Backend health check failed" or "Connection refused"**
-- Ensure backend is running on port 4000
-- Check that no other service is using port 4000
-- Verify `.env` configuration is complete
-- Check backend console for error messages
-
-### Frontend Issues
-
-**"Frontend won't start" or "Port conflicts"**
-- Ensure frontend runs on port 5173 (required for OAuth)
-- Stop other services using port 5173
-- Restart frontend development server
-- Clear browser cache and localStorage
-
-### API Integration Issues
-
-**"I do not have access to real-time information" Error**
-- Verify Gemini API key in `.env` file
-- Ensure the key has proper permissions
-- Check internet connection
-- Set `MOCK_AI=true` for testing without API
-
-**Weather/News API errors**
-- Weather works without API key (uses fallback service)
-- News falls back to Hacker News if NewsAPI unavailable
-- Check API key configuration if using premium features
-
-### Database Issues
-
-**SQLite errors or "Database connection failed"**
-- Ensure backend has write permissions
-- Check if `backend/database.sqlite` exists
-- Backend will auto-create tables on first run
-- Check backend console for specific database errors
-
-### General Debugging
-
-1. **Check Browser Console**: Look for JavaScript errors
-2. **Check Backend Logs**: Monitor server console output
-3. **Verify Environment**: Ensure all `.env` variables are set
-4. **Test Authentication**: Try logging out and back in
-5. **Clear Storage**: Clear browser localStorage if needed
-
-## 💻 **Technologies Used**
-
-### Backend
+### Backend Technologies
 - **Node.js & Express.js**: Server framework
-- **Passport.js**: Authentication middleware
-  - `passport-github2`: GitHub OAuth strategy
-  - `passport-jwt`: JWT authentication strategy
-- **jsonwebtoken**: JWT token generation and verification
-- **express-session**: Session management
-- **SQLite**: Database (with auto-migration)
-- **Google Gemini AI**: AI response generation
-- **Third-party APIs**: Weather, GitHub, News
+- **Passport.js**: Authentication middleware (`passport-github2`, `passport-jwt`)
+- **JWT**: Token-based authentication with 7-day expiration
+- **SQLite/PostgreSQL**: Database with auto-migration support
+- **Google Gemini AI**: AI response generation (`gemini-2.5-flash`)
 
-### Frontend
-- **React 18**: Modern frontend framework
-- **Vite**: Fast development build tool
-- **React Router DOM**: Client-side routing
-- **Tailwind CSS**: Utility-first CSS framework
-- **Framer Motion**: Smooth animations
-- **Lucide React**: Beautiful icons
+### Frontend Technologies
+- **React 18 + Vite**: Modern frontend with fast development
+- **React Router DOM**: Client-side routing with protected routes
+- **Tailwind CSS**: Utility-first styling with responsive design
 - **Context API**: Global authentication state management
 
-### Authentication & Security
+### Security & Integrations
 - **GitHub OAuth 2.0**: Secure social authentication
-- **JWT (JSON Web Tokens)**: Stateless authentication
-- **Role-based Access Control**: User permissions
-- **CORS**: Cross-origin resource sharing
-- **Environment Variables**: Secure configuration
-
-### APIs & Integrations
-- **Google Gemini AI**: `gemini-2.5-flash` model
-- **Open-Meteo**: Weather data (free tier)
-- **GitHub API**: Repository trending data
-- **NewsAPI**: Headlines (with Hacker News fallback)
-- **OpenWeatherMap**: Enhanced weather (optional)
+- **Role-based Access Control**: User data isolation
+- **Third-party APIs**: Weather (Open-Meteo), GitHub, News (NewsAPI/Hacker News)
 
 ## 📈 **Project Architecture**
 
@@ -420,16 +319,7 @@ Automation/
     └── vite.config.js        # Vite configuration
 ```
 
-## 🔐 **Security Features**
 
-- **OAuth 2.0**: Secure GitHub authentication
-- **JWT Tokens**: Stateless authentication with expiration
-- **User Isolation**: Database queries filtered by user_id
-- **Protected Routes**: All API endpoints require authentication
-- **CORS Configuration**: Restricted origins for security
-- **Environment Variables**: Sensitive data in .env files
-- **Session Security**: Secure cookie configuration
-- **Role-based Access**: User and admin role separation
 
 ## 🚀 **Recent Enhancements**
 
@@ -480,8 +370,7 @@ This project is licensed under the MIT License.
 
 ---
 
-**Built with ❤️ by [Your Name]**  
-*A modern, secure workflow automation platform with AI integration*
+**Built with ❤️ - A modern, secure workflow automation platform with AI integration**
 
 ## 🚀 **Deployment Guide**
 
@@ -713,24 +602,7 @@ VITE_DEBUG_MODE=false
 - [ ] Domain names configured
 - [ ] Performance testing completed
 
-### 🔧 **Database Migration for Production**
 
-**Update backend/src/db/index.js for PostgreSQL:**
-```javascript
-// Add this for production PostgreSQL support
-const isDevelopment = process.env.NODE_ENV !== 'production'
-const dbPath = process.env.DATABASE_URL || 
-  (isDevelopment ? './database.sqlite' : null)
-
-if (process.env.DATABASE_URL) {
-  // PostgreSQL configuration
-  // Your existing PostgreSQL setup code
-} else {
-  // SQLite fallback for development
-  // Your existing SQLite setup code
-}
-
-```
 
 
 ### 🚨 **Security Considerations**
