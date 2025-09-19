@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+  
+  body {
+    @apply m-0 bg-gradient-bg text-text-primary min-h-screen leading-relaxed overflow-x-hidden;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  /* Custom scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    @apply w-2;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-bg-secondary;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-accent-primary rounded;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-accent-secondary;
+  }
+  
+  /* Glass effect utility */
+  .glass {
+    @apply bg-bg-secondary/80 backdrop-blur-xl border border-white/10;
+  }
+  
+  /* Button utilities */
+  .btn-primary {
+    @apply bg-gradient-primary text-white border-none px-6 py-3 rounded-xl font-semibold text-sm cursor-pointer transition-all duration-300 uppercase tracking-wider;
+  }
+  
+  .btn-primary:hover {
+    @apply -translate-y-0.5 shadow-glow;
+  }
+  
+  .btn-primary:active {
+    @apply translate-y-0;
+  }
+  
+  /* Form utilities */
+  .form-input {
+    @apply w-full p-4 bg-bg-tertiary border border-white/10 rounded-xl text-text-primary text-sm transition-all duration-150;
+  }
+  
+  .form-input:focus {
+    @apply outline-none border-accent-primary shadow-lg shadow-accent-primary/10;
+  }
+  
+  .form-input::placeholder {
+    @apply text-text-muted;
+  }
+  
+  /* Card utilities */
+  .card {
+    @apply bg-bg-secondary border border-white/10 rounded-2xl p-6 transition-all duration-300;
+  }
+  
+  .card:hover {
+    @apply border-accent-primary/30 shadow-lg;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-primary bg-clip-text text-transparent;
+  }
+  
+  .shadow-glow {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite;
+  }
+}
