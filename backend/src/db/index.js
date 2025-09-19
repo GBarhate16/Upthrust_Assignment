@@ -14,10 +14,16 @@ function connect() {
 	}
 	client = new Client({
 		connectionString: url,
-		ssl: process.env.PGSSL === 'true' ? { rejectUnauthorized: false } : undefined,
+		ssl: process.env.NODE_ENV === 'production' ? {
+			rejectUnauthorized: false
+		} : false,
+		connectionTimeoutMillis: 30000,
+		query_timeout: 30000,
+		idle_in_transaction_session_timeout: 30000
 	});
 	connectPromise = client.connect()
 		.then(async () => {
+			console.log('[DB] Successfully connected to PostgreSQL database');
 			// Create users table
 			await client.query(`CREATE TABLE IF NOT EXISTS users (
 				id SERIAL PRIMARY KEY,
@@ -59,6 +65,7 @@ function connect() {
 		})
 		.catch((e) => {
 			console.error('[DB] Connection failed:', e.message);
+			console.error('[DB] Full error:', e);
 			throw e;
 		});
 	return connectPromise;
